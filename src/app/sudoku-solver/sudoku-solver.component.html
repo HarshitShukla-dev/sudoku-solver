@@ -1,0 +1,19 @@
+<div class="sudoku-container">
+    <div class="sudoku-board">
+        <div *ngFor="let row of board; let i = index" class="row">
+            <input *ngFor="let cell of row; let j = index" class="cell" [(ngModel)]="board[i][j]" type="number" min="0"
+                max="9" />
+        </div>
+    </div>
+    <div class="buttons">
+        <mdui-button (click)="fillRandom()" class="button">Randomly Fill</mdui-button>
+
+        <mdui-dropdown>
+            <mdui-button slot="trigger" class="button">Solve</mdui-button>
+            <mdui-menu>
+                <mdui-menu-item (click)="solveSudoku()">Visualize</mdui-menu-item>
+                <mdui-menu-item (click)="solveInstantly()">Solve Instantly</mdui-menu-item>
+            </mdui-menu>
+        </mdui-dropdown>
+    </div>
+</div>
