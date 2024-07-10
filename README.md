@@ -1,27 +1,75 @@
-# SudokuSolver
+# Sudoku Solver
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.0.
+This is a Sudoku Solver built using Angular with standalone components. The application allows you to:
+- Randomly fill some cells in the Sudoku board.
+- Manually solve the Sudoku.
+- Solve the Sudoku using a backtracking algorithm with visualization.
 
-## Development server
+## Hosted Application
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+You can access the hosted application [here](https://sudoku.hs.vc).
 
-## Code scaffolding
+## Features
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **Randomly Fill**: Fill the Sudoku board with random numbers in valid positions.
+- **Solve**: Automatically solve the Sudoku using backtracking with visualization.
+- **Manual Solve**: Manually solve the Sudoku by entering numbers in the cells.
 
-## Build
+## Installation
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+To run the project locally, follow these steps:
 
-## Running unit tests
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/your-username/sudoku-solver.git
+    cd sudoku-solver
+    ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+2. Install the dependencies:
+    ```sh
+    npm install
+    ```
 
-## Running end-to-end tests
+3. Run the application:
+    ```sh
+    ng serve
+    ```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+4. Open your browser and navigate to `http://localhost:4200`.
 
-## Further help
+## Usage
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- **Randomly Fill**: Click the "Randomly Fill" button to fill some cells with random numbers.
+- **Solve**: Click the "Solve" button to start the backtracking algorithm. The process will be visualized in the grid.
+- **Manual Solve**: After clicking "Randomly Fill," you can enter numbers manually in the cells to solve the Sudoku.
+
+## Code Overview
+
+### Components
+
+- **SudokuSolverComponent**: This is the main component responsible for rendering the Sudoku grid, handling user interactions, and solving the Sudoku.
+
+### Methods
+
+- `fillRandom()`: Randomly fills some cells in the Sudoku board with valid numbers.
+- `solveSudoku()`: Initiates the backtracking algorithm to solve the Sudoku.
+- `solve(row: number, col: number)`: The recursive function implementing the backtracking algorithm.
+- `isSafe(row: number, col: number, num: number)`: Checks if placing a number in a specific cell is valid.
+- `updateBoard()`: Adds a delay to visualize the backtracking process.
+
+### Styles
+
+- The grid is styled using CSS Grid for a neat and responsive layout.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Contact
+
+If you have any questions or feedback, feel free to reach out.
+
