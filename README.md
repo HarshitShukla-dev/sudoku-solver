@@ -1,6 +1,6 @@
 # Sudoku Solver
 
-This is a Sudoku Solver built using Angular with standalone components. The application allows you to:
+This is a Sudoku Solver built using Angular with standalone components and utilizes backtracking algorithm. The application allows you to:
 - Randomly fill some cells in the Sudoku board.
 - Manually solve the Sudoku.
 - Solve the Sudoku using a backtracking algorithm with visualization.
@@ -59,7 +59,7 @@ To run the project locally, follow these steps:
 
 ### Styles
 
-- The grid is styled using CSS Grid for a neat and responsive layout.
+- The project uses MDUI components..
 
 ## License
 
