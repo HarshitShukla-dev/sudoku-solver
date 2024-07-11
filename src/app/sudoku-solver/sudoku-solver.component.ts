@@ -13,40 +13,41 @@ import 'mdui';
   styleUrl: './sudoku-solver.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class SudokuSolverComponent {
-board: (number | null)[][] = Array.from({ length: 9 }, () => Array(9).fill(null));
+  board: (number | null)[][] = Array.from({ length: 9 }, () => Array(9).fill(null));
 
-fillRandom() {
-  this.board = Array.from({ length: 9 }, () => Array(9).fill(null));
-  let filledCells = 0;
-  while (filledCells < 20) {
-    const row = Math.floor(Math.random() * 9);
-    const col = Math.floor(Math.random() * 9);
-    const num = Math.floor(Math.random() * 9) + 1;
-    if (this.board[row][col] === null && this.isUnique(row, col, num)) {
-      this.board[row][col] = num;
-      filledCells++;
-    }
-  }
-}
-
-isUnique(row: number, col: number, num: number): boolean {
-  for (let i = 0; i < 9; i++) {
-    if (this.board[row][i] === num || this.board[i][col] === num) {
-      return false;
-    }
-  }
-  const startRow = Math.floor(row / 3) * 3;
-  const startCol = Math.floor(col / 3) * 3;
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (this.board[startRow + i][startCol + j] === num) {
-        return false;
+  fillRandom() {
+    this.board = Array.from({ length: 9 }, () => Array(9).fill(null));
+    let filledCells = 0;
+    while (filledCells < 20) {
+      const row = Math.floor(Math.random() * 9);
+      const col = Math.floor(Math.random() * 9);
+      const num = Math.floor(Math.random() * 9) + 1;
+      if (this.board[row][col] === null && this.isUnique(row, col, num)) {
+        this.board[row][col] = num;
+        filledCells++;
       }
     }
   }
-  return true;
-}
+
+  isUnique(row: number, col: number, num: number): boolean {
+    for (let i = 0; i < 9; i++) {
+      if (this.board[row][i] === num || this.board[i][col] === num) {
+        return false;
+      }
+    }
+    const startRow = Math.floor(row / 3) * 3;
+    const startCol = Math.floor(col / 3) * 3;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (this.board[startRow + i][startCol + j] === num) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   solveSudoku() {
     this.solve(0, 0).then(solved => {
@@ -61,7 +62,7 @@ isUnique(row: number, col: number, num: number): boolean {
     });
   }
 
-async solve(row: number, col: number): Promise<boolean> {
+  async solve(row: number, col: number): Promise<boolean> {
     if (row === 9) return true;
     if (col === 9) return this.solve(row + 1, 0);
     if (this.board[row][col] !== null) return this.solve(row, col + 1);
@@ -97,18 +98,17 @@ async solve(row: number, col: number): Promise<boolean> {
   }
 
   solveInstantly(row: number = 0, col: number = 0): boolean {
-  if (row === 9) return true; // If we've reached the end of the board, the sudoku is solved
-  if (col === 9) return this.solveInstantly(row + 1, 0); // Move to the next row if we've reached the end of a column
-  if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1); // Skip filled cells
+    if (row === 9) return true; // If we've reached the end of the board, the sudoku is solved
+    if (col === 9) return this.solveInstantly(row + 1, 0); // Move to the next row if we've reached the end of a column
+    if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1); // Skip filled cells
 
-  for (let num = 1; num <= 9; num++) {
-    if (this.isSafe(row, col, num)) {
-      this.board[row][col] = num; // Try this number for the current cell
-      if (this.solveInstantly(row, col + 1)) return true; // If it leads to a solution, return true
-      this.board[row][col] = null; // Otherwise, backtrack
+    for (let num = 1; num <= 9; num++) {
+      if (this.isSafe(row, col, num)) {
+        this.board[row][col] = num; // Try this number for the current cell
+        if (this.solveInstantly(row, col + 1)) return true; // If it leads to a solution, return true
+        this.board[row][col] = null; // Otherwise, backtrack
+      }
     }
+    return false; // If no number can be placed in this cell, return false
   }
-  return false; // If no number can be placed in this cell, return false
-}
-
 }
