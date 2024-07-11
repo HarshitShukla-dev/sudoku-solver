@@ -90,7 +90,7 @@ export class SudokuSolverComponent {
 
 
   updateBoard() {
-    return new Promise(resolve => setTimeout(resolve, 0));
+    return new Promise(resolve => setTimeout(resolve, 1));
   }
 
 
