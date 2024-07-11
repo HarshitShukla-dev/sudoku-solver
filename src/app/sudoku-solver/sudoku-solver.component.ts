@@ -50,26 +50,26 @@ export class SudokuSolverComponent {
   }
 
 
-constructor(private renderer: Renderer2, private el: ElementRef) {}
-solveSudoku() {
-  this.solve(0, 0).then(solved => {
-    if (solved) {
-      console.log('Sudoku solved successfully!');
-      this.changeCellBorderColor('#59ff00');
-    } else {
-      console.error('Failed to solve Sudoku.');
-    }
-  }).catch(error => {
-    console.error('Error solving Sudoku:', error);
-  });
-}
+  constructor(private renderer: Renderer2, private el: ElementRef) { }
+  solveSudoku() {
+    this.solve(0, 0).then(solved => {
+      if (solved) {
+        console.log('Sudoku solved successfully!');
+        this.changeCellBorderColor('#59ff00');
+      } else {
+        console.error('Failed to solve Sudoku.');
+      }
+    }).catch(error => {
+      console.error('Error solving Sudoku:', error);
+    });
+  }
 
-changeCellBorderColor(color: string) {
-  const cells = this.el.nativeElement.querySelectorAll('.cell');
-  cells.forEach((cell: any) => {
-    this.renderer.setStyle(cell, 'border-color', color);
-  });
-}
+  changeCellBorderColor(color: string) {
+    const cells = this.el.nativeElement.querySelectorAll('.cell');
+    cells.forEach((cell: any) => {
+      this.renderer.setStyle(cell, 'border-color', color);
+    });
+  }
 
   async solve(row: number, col: number): Promise<boolean> {
     if (row === 9) return true;
@@ -82,7 +82,7 @@ changeCellBorderColor(color: string) {
         await this.updateBoard();
         if (await this.solve(row, col + 1)) return true;
         this.board[row][col] = null;
-        await this.updateBoard(); 
+        await this.updateBoard();
       }
     }
     return false;
@@ -108,15 +108,15 @@ changeCellBorderColor(color: string) {
   solveInstantly(row: number = 0, col: number = 0): boolean {
     if (row === 9) return true;
     if (col === 9) return this.solveInstantly(row + 1, 0);
-    if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1); 
+    if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1);
 
     for (let num = 1; num <= 9; num++) {
       if (this.isSafe(row, col, num)) {
         this.board[row][col] = num;
-        if (this.solveInstantly(row, col + 1)) return true; 
+        if (this.solveInstantly(row, col + 1)) return true;
         this.board[row][col] = null;
       }
     }
-    return false; 
+    return false;
   }
 }
