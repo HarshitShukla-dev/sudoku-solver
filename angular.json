@@ -92,7 +92,8 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "repo": "https://github.com/HarshitShukla-dev/sudoku-solver.git"
+            "repo": "https://github.com/HarshitShukla-dev/sudoku-solver.git",
+            "cname": "sudoku.hs.vc"
           }
         }
       }

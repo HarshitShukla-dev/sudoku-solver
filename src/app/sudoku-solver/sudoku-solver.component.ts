@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
+import { Component, Renderer2, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -49,18 +49,27 @@ export class SudokuSolverComponent {
     return true;
   }
 
-  solveSudoku() {
-    this.solve(0, 0).then(solved => {
-      if (solved) {
-        console.log('Sudoku solved successfully!');
-        // Manually trigger change detection to update the UI
-      } else {
-        console.error('Failed to solve Sudoku.');
-      }
-    }).catch(error => {
-      console.error('Error solving Sudoku:', error);
-    });
-  }
+
+constructor(private renderer: Renderer2, private el: ElementRef) {}
+solveSudoku() {
+  this.solve(0, 0).then(solved => {
+    if (solved) {
+      console.log('Sudoku solved successfully!');
+      this.changeCellBorderColor('#59ff00');
+    } else {
+      console.error('Failed to solve Sudoku.');
+    }
+  }).catch(error => {
+    console.error('Error solving Sudoku:', error);
+  });
+}
+
+changeCellBorderColor(color: string) {
+  const cells = this.el.nativeElement.querySelectorAll('.cell');
+  cells.forEach((cell: any) => {
+    this.renderer.setStyle(cell, 'border-color', color);
+  });
+}
 
   async solve(row: number, col: number): Promise<boolean> {
     if (row === 9) return true;
@@ -70,16 +79,15 @@ export class SudokuSolverComponent {
     for (let num = 1; num <= 9; num++) {
       if (this.isSafe(row, col, num)) {
         this.board[row][col] = num;
-        await this.updateBoard(); // Ensure visualization updates are awaited
+        await this.updateBoard();
         if (await this.solve(row, col + 1)) return true;
         this.board[row][col] = null;
-        await this.updateBoard(); // Ensure visualization updates are awaited for backtracking
+        await this.updateBoard(); 
       }
     }
     return false;
   }
 
-  // Assuming updateBoard is already correctly implemented to update the UI
 
   updateBoard() {
     return new Promise(resolve => setTimeout(resolve, 0));
@@ -98,17 +106,17 @@ export class SudokuSolverComponent {
   }
 
   solveInstantly(row: number = 0, col: number = 0): boolean {
-    if (row === 9) return true; // If we've reached the end of the board, the sudoku is solved
-    if (col === 9) return this.solveInstantly(row + 1, 0); // Move to the next row if we've reached the end of a column
-    if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1); // Skip filled cells
+    if (row === 9) return true;
+    if (col === 9) return this.solveInstantly(row + 1, 0);
+    if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1); 
 
     for (let num = 1; num <= 9; num++) {
       if (this.isSafe(row, col, num)) {
-        this.board[row][col] = num; // Try this number for the current cell
-        if (this.solveInstantly(row, col + 1)) return true; // If it leads to a solution, return true
-        this.board[row][col] = null; // Otherwise, backtrack
+        this.board[row][col] = num;
+        if (this.solveInstantly(row, col + 1)) return true; 
+        this.board[row][col] = null;
       }
     }
-    return false; // If no number can be placed in this cell, return false
+    return false; 
   }
 }
