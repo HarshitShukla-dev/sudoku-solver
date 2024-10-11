@@ -16,11 +16,30 @@ import 'mdui';
 
 export class SudokuSolverComponent {
   board: (number | null)[][] = Array.from({ length: 9 }, () => Array(9).fill(null));
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
+
+  // Tracking function to uniquely identify rows
+  trackByRow(index: number, row: any): number {
+    return index;
+  }
+
+  // Tracking function to uniquely identify cells
+  trackByCell(index: number, cell: any): number {
+    return index;
+  }
+
+  // Prevent invalid input like non-numbers or out-of-range numbers
+  preventInvalidInput(event: KeyboardEvent): void {
+    const inputChar = event.key;
+    if (!/^[1-9]$/.test(inputChar) && event.key !== 'Backspace' && event.key !== 'Delete') {
+      event.preventDefault();
+    }
+  }
 
   fillRandom() {
     this.board = Array.from({ length: 9 }, () => Array(9).fill(null));
     let filledCells = 0;
-    while (filledCells < 20) {
+    while (filledCells < 12) {
       const row = Math.floor(Math.random() * 9);
       const col = Math.floor(Math.random() * 9);
       const num = Math.floor(Math.random() * 9) + 1;
@@ -29,6 +48,15 @@ export class SudokuSolverComponent {
         filledCells++;
       }
     }
+    this.resetCellColor();
+  }
+
+  resetCellColor() {
+    const cells = this.el.nativeElement.querySelectorAll('.cell');
+    cells.forEach((cell: any) => {
+      this.renderer.setStyle(cell, 'border-color', 'rgb(var(--mdui-color-tertiary))');
+      this.renderer.setStyle(cell, 'background-color', 'rgb(var(--mdui-color-surface-container-highest))');
+    });
   }
 
   isUnique(row: number, col: number, num: number): boolean {
@@ -49,25 +77,25 @@ export class SudokuSolverComponent {
     return true;
   }
 
-
-  constructor(private renderer: Renderer2, private el: ElementRef) { }
   solveSudoku() {
     this.solve(0, 0).then(solved => {
       if (solved) {
         console.log('Sudoku solved successfully!');
-        this.changeCellBorderColor('#59ff00');
+        this.changeCellColor();
       } else {
         console.error('Failed to solve Sudoku.');
+        this.changeCellColor('red', 'rgba(var(--mdui-color-warning))');
       }
     }).catch(error => {
       console.error('Error solving Sudoku:', error);
     });
   }
 
-  changeCellBorderColor(color: string) {
+  changeCellColor(color1: string = 'rgb(var(--mdui-color-success-border))', color2: string = 'rgba(var(--mdui-color-success))') {
     const cells = this.el.nativeElement.querySelectorAll('.cell');
     cells.forEach((cell: any) => {
-      this.renderer.setStyle(cell, 'border-color', color);
+      this.renderer.setStyle(cell, 'border-color', color1);
+      this.renderer.setStyle(cell, 'background-color', color2);
     });
   }
 
@@ -88,11 +116,9 @@ export class SudokuSolverComponent {
     return false;
   }
 
-
   updateBoard() {
     return new Promise(resolve => setTimeout(resolve, 1));
   }
-
 
   isSafe(row: number, col: number, num: number): boolean {
     for (let x = 0; x < 9; x++) {
@@ -105,15 +131,32 @@ export class SudokuSolverComponent {
     return true;
   }
 
-  solveInstantly(row: number = 0, col: number = 0): boolean {
+  // Updated solveInstantly function with error handling
+  solveInstantly(row: number = 0, col: number = 0): void {
+    try {
+      const isSolved = this.solveInstantlyHelper(row, col);
+      if (isSolved) {
+        console.log('Sudoku solved instantly!');
+        this.changeCellColor(); // Change to green
+      } else {
+        throw new Error('Failed to solve Sudoku instantly.');
+      }
+    } catch (error) {
+      console.error(error);
+      this.changeCellColor('red', 'rgba(var(--mdui-color-warning))'); // Change to red
+    }
+  }
+
+  // Helper function for solveInstantly logic
+  solveInstantlyHelper(row: number = 0, col: number = 0): boolean {
     if (row === 9) return true;
-    if (col === 9) return this.solveInstantly(row + 1, 0);
-    if (this.board[row][col] !== null) return this.solveInstantly(row, col + 1);
+    if (col === 9) return this.solveInstantlyHelper(row + 1, 0);
+    if (this.board[row][col] !== null) return this.solveInstantlyHelper(row, col + 1);
 
     for (let num = 1; num <= 9; num++) {
       if (this.isSafe(row, col, num)) {
         this.board[row][col] = num;
-        if (this.solveInstantly(row, col + 1)) return true;
+        if (this.solveInstantlyHelper(row, col + 1)) return true;
         this.board[row][col] = null;
       }
     }
