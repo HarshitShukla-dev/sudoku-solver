@@ -9,6 +9,7 @@ import { setColorScheme } from 'mdui/functions/setColorScheme.js';
 import 'mdui/mdui.css'
 import 'mdui';
 
+setColorScheme("#FFC0CB");
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -36,7 +37,7 @@ export class AppComponent {
 promptForColor(): void {
   const color = window.prompt('Please enter a color value in hex format (e.g., #ff9ac9):');
   if (color) {
-    setColorScheme(color); // Call the imported function with the user-provided color
-  }
+    setColorScheme(color);
+  } 
 }
 }
