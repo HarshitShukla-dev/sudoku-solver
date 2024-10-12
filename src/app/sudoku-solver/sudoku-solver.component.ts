@@ -18,17 +18,14 @@ export class SudokuSolverComponent {
   board: (number | null)[][] = Array.from({ length: 9 }, () => Array(9).fill(null));
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
-  // Tracking function to uniquely identify rows
   trackByRow(index: number, row: any): number {
     return index;
   }
 
-  // Tracking function to uniquely identify cells
   trackByCell(index: number, cell: any): number {
     return index;
   }
 
-  // Prevent invalid input like non-numbers or out-of-range numbers
   preventInvalidInput(event: KeyboardEvent): void {
     const inputChar = event.key;
     if (!/^[1-9]$/.test(inputChar) && event.key !== 'Backspace' && event.key !== 'Delete') {
@@ -78,7 +75,7 @@ export class SudokuSolverComponent {
   }
 
   solveSudoku() {
-    this.solve(0, 0).then(solved => {
+    this.solveHelper(0, 0).then(solved => {
       if (solved) {
         console.log('Sudoku solved successfully!');
         this.changeCellColor();
@@ -99,16 +96,16 @@ export class SudokuSolverComponent {
     });
   }
 
-  async solve(row: number, col: number): Promise<boolean> {
+  async solveHelper(row: number, col: number): Promise<boolean> {
     if (row === 9) return true;
-    if (col === 9) return this.solve(row + 1, 0);
-    if (this.board[row][col] !== null) return this.solve(row, col + 1);
+    if (col === 9) return this.solveHelper(row + 1, 0);
+    if (this.board[row][col] !== null) return this.solveHelper(row, col + 1);
 
     for (let num = 1; num <= 9; num++) {
       if (this.isSafe(row, col, num)) {
         this.board[row][col] = num;
         await this.updateBoard();
-        if (await this.solve(row, col + 1)) return true;
+        if (await this.solveHelper(row, col + 1)) return true;
         this.board[row][col] = null;
         await this.updateBoard();
       }
@@ -131,23 +128,21 @@ export class SudokuSolverComponent {
     return true;
   }
 
-  // Updated solveInstantly function with error handling
   solveInstantly(row: number = 0, col: number = 0): void {
     try {
       const isSolved = this.solveInstantlyHelper(row, col);
       if (isSolved) {
         console.log('Sudoku solved instantly!');
-        this.changeCellColor(); // Change to green
+        this.changeCellColor();
       } else {
         throw new Error('Failed to solve Sudoku instantly.');
       }
     } catch (error) {
       console.error(error);
-      this.changeCellColor('red', 'rgba(var(--mdui-color-warning))'); // Change to red
+      this.changeCellColor('red', 'rgba(var(--mdui-color-warning))');
     }
   }
 
-  // Helper function for solveInstantly logic
   solveInstantlyHelper(row: number = 0, col: number = 0): boolean {
     if (row === 9) return true;
     if (col === 9) return this.solveInstantlyHelper(row + 1, 0);
