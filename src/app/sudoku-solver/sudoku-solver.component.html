@@ -3,7 +3,7 @@
       <div *ngFor="let row of board; let i = index; trackBy: trackByRow" class="row">
         <input *ngFor="let cell of row; let j = index; trackBy: trackByCell"
           class="cell" [(ngModel)]="board[i][j]" 
-          type="number" min="1" max="9"
+          min="1" max="9"
           (keydown)="preventInvalidInput($event)" />
       </div>
     </div>
